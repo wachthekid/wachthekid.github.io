@@ -1,0 +1,150 @@
+<html lang="th">
+    <head>
+       <meta charset="UTF-8" />
+	   <meta name="viewport" content="width=device-width, initial-scale=1" />
+	   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+       <style>
+        body{
+            line-height:1.8;
+        }
+        input[type="text"]{
+            margin-left:20px;
+        }
+        #mc{
+            text-transform:uppercase;
+        }
+       </style>
+    </head>
+    <body>
+        <label for="mc">หมายเลขเครื่อง</label><input type="text" id="mc" name="mc" value="274-846" /><br/>
+        <label for="ld">License Date</label><input type="text" id="ld" name="ld" /><br/>
+        <label for="msg">Message</label><textarea id="msg" name="msg" cols="80" rows="6"></textarea><br/>
+        <input type="button" id="btnGen" value="Generate" />
+        <script type="text/javascript">
+
+            const transformMC = (mc) => {
+                let mret = '';
+                for(let i=0;i<8;i++){
+                    switch(mc.charAt(i))
+                    {
+                        case '3': mret += '0'; break;
+                        case '6': mret += '1'; break;
+                        case '8': mret += '2'; break;
+                        case 'q':
+                        case 'Q': mret += '3'; break;
+                        case '2': mret += '4'; break;
+                        case '9': mret += '5'; break;
+                        case '7': mret += '6'; break;
+                        case '4': mret += '7'; break;
+                        case 'g':
+                        case 'G': mret += '8'; break;
+                        case '5': mret += '9'; break;
+                        case 'n':
+                        case 'N': mret += 'A'; break;
+                        case 'z':
+                        case 'Z': mret += 'B'; break;
+                        case 'k':
+                        case 'K': mret += 'C'; break;
+                        case 'l':
+                        case 'L': mret += 'D'; break;
+                        case '0': mret += 'E'; break;
+                        case '1': mret += 'F'; break;
+                    }
+                }
+                return mret;
+            }
+
+            const transformLd = (ndate) => {
+                let nret = 26112;
+
+                if(ndate>0){
+                    let sdate = ndate.toString();
+                    let sret = '';
+                    for(let i=0;i<4;i++)
+                    {
+                        switch(sdate.charAt(i))
+                        {
+                            case '0': sret += '6';break;
+                            case '1': sret += '4';break;
+                            case '2': sret += '8';break;
+                            case '3': sret += '1';break;
+                            case '4': sret += '9';break;
+                            case '5': sret += '5';break;
+                            case '6': sret += '0';break;
+                            case '7': sret += '3';break;
+                            case '8': sret += '2';break;
+                            case '9': sret += '7';break;
+                        }
+                    }
+                    return sret.padStart(4, '0');
+                }else{
+                    return '0000';     
+                }           
+            }
+
+            $(document).ready(function(){
+                let dt = new Date();
+                let d = dt.getDate();
+                if(d>16){
+                    dt.setMonth(dt.getMonth() + 1);
+                }
+                let y = (dt.getYear()+543) % 100;
+                let m = dt.getMonth()+1;
+
+                $(ld).val(String(y).padStart(2, '0')+String(m).padStart(2, '0'));
+
+                $('#btnGen').click(e=>{
+                    e.preventDefault();
+
+                    let amc = $("#mc").val().split('-');
+                    if(amc.length==1){
+                        amc.push('');
+                    }
+                    let mc = amc[0].padStart(4,'3').toUpperCase();
+                    mc += amc[1].padStart(4,'3').toUpperCase();
+
+                    mc = transformMC(mc);
+
+                    let dwMid = Number('0x' + mc);
+                    dwMid = dwMid >>> 0;
+                    let w1 = dwMid >> 16;
+                    let w2 = dwMid & 0xffff;
+                    let wTmp = w1 ^ w2;
+                    w1 = wTmp & 0xff;
+                    w2 = wTmp >> 8;
+                    dwMid = (w2 << 16)+w1;
+
+                    let ld = transformLd($("#ld").val());
+                    dwTmp = Number('0x' + ld.charAt(0) + ld.charAt(1) + '00' + ld.charAt(2) + ld.charAt(3) + '00' );
+
+                    dwMid = dwMid + dwTmp;
+
+                    let msg = '';
+
+                    if($("#mc").val() == '274-846'){
+                        msg += 'A274-B846\n';
+                    }else{
+                        mc = $("#mc").val().toUpperCase();
+                        msg += mc + "\n";
+                    }
+                    msg+= "License : "+dwMid.toString()+"\n";
+                    msg+= "😜 โปรดจดหมายเลขเครื่องและLicenseไว้เป็นหลักฐาน\n";
+                    msg+= "🚩!! ถ้าหายซื้อใหม่อย่างเดียวหรือติดต่อ 089-694-7553 !!";
+
+                    $('#msg').text(msg);
+
+                    /*$.ajax({
+                        type: "POST",
+                        url: 'https://crimson-gaynor-96.tiiny.io',
+                        data: JSON.stringify({"mc":$("#mc").val(),"ld":$("#ld").val()}),
+                        contentType: "application/json",
+                        success: function(res){
+                            navigator.clipboard.writeText(res);
+                            $('#msg').text(res);
+                        }
+                    });*/          
+                });
+            })
+        </script>
+    </body>
+</html>

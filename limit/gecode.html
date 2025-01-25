@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang=en ng-app="genApp">
+<head>
+	<title>Gencode</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+<div ng-controller="mainController">
+Machine Code : <input type="text" maxlength="9" size="9" ng-model="mc" style="text-transform:uppercase;" ng-change="changed()" /><span ng-if="mcode"> => </span>{{mcode}}<br/>
+License Date : <input type="number" maxlength="4" size="4" ng-model="ld" /><br/>
+<input type="button" value="Generate" ng-click="generate()" /><br/>
+<div ng-if="mcode">
+{{'0x' + mcode}} => {{dwId}}<br/>
+w1 = {{sw1}}, w2 = {{sw2}}<br/>
+wTmp = {{swTmp}}<br/>
+b1 = {{sb1}}, b2 = {{sb2}}<br/>
+code = {{scode}}<br/>
+</div>
+</div>
+</body>
+</html>
