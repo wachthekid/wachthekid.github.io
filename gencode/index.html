@@ -105,21 +105,30 @@
 
                     mc = transformMC(mc);
 
+                    console.log("mc=",mc);
+
                     let dwMid = Number('0x' + mc);
-                    dwMid = dwMid >>> 0;
-                    let w1 = dwMid >> 16;
+                    //dwMid = dwMid >>> 0;
+                    let w1 = dwMid >>> 16;
+                    console.log("w1=",w1.toString(16));
                     let w2 = dwMid & 0xffff;
+                    console.log("w2=",w2.toString(16));
                     let wTmp = w1 ^ w2;
+                    console.log("wTmp=",wTmp.toString(16));
                     w1 = wTmp & 0xff;
+                    console.log("w1=",w1.toString(16));
                     w2 = wTmp >> 8;
+                    console.log("w2=",w2.toString(16));
                     dwMid = (w2 << 16)+w1;
+                    console.log("dwMid=",dwMid.toString(16));
 
                     let ld = transformLd($("#ld").val());
                     dwTmp = Number('0x' + ld.charAt(0) + ld.charAt(1) + '00' + ld.charAt(2) + ld.charAt(3) + '00' );
+                    console.log("dwTmp=",dwTmp.toString(16));
 
                     dwMid = dwMid + dwTmp;
 
-                    let msg = '';
+                    let msg = 'หมายเลขเครื่อง : ';
 
                     if($("#mc").val() == '274-846'){
                         msg += 'A274-B846\n';
